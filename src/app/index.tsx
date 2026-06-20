@@ -1,98 +1,105 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { Link, type Href } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+type Demo = {
+  href: Href;
+  title: string;
+  description: string;
+  accent: string;
+  emoji: string;
+};
+
+const DEMOS: Demo[] = [
+  {
+    href: '/swipe-deck',
+    title: 'Swipe Deck',
+    description: 'Tinder-style draggable card stack',
+    accent: '#FF5864',
+    emoji: '🃏',
+  },
+  {
+    href: '/skeleton',
+    title: 'Skeleton',
+    description: 'Shimmering content placeholders',
+    accent: '#8E9AAF',
+    emoji: '✨',
+  },
+  {
+    href: '/shared-transition',
+    title: 'Shared Transition',
+    description: 'Animate elements across screens',
+    accent: '#208AEF',
+    emoji: '🔀',
+  },
+];
 
 export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.header}>
+            <ThemedText type="title">Foonto</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              Beautiful, open-source React Native animations.
+            </ThemedText>
+          </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
+          {DEMOS.map((demo) => (
+            <Link key={demo.title} href={demo.href} asChild>
+              <Pressable style={({ pressed }) => pressed && styles.pressed}>
+                <ThemedView type="backgroundElement" style={styles.card}>
+                  <View style={[styles.badge, { backgroundColor: demo.accent }]}>
+                    <ThemedText style={styles.emoji}>{demo.emoji}</ThemedText>
+                  </View>
+                  <View style={styles.cardText}>
+                    <ThemedText style={styles.cardTitle}>{demo.title}</ThemedText>
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {demo.description}
+                    </ThemedText>
+                  </View>
+                </ThemedView>
+              </Pressable>
+            </Link>
+          ))}
+        </ScrollView>
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  container: { flex: 1 },
+  safeArea: { flex: 1 },
+  content: {
+    padding: Spacing.four,
+    gap: Spacing.three,
+  },
+  header: {
+    gap: Spacing.one,
+    marginBottom: Spacing.two,
+  },
+  card: {
     flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
     alignItems: 'center',
     gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
+    padding: Spacing.three,
     borderRadius: Spacing.four,
   },
+  pressed: { opacity: 0.7 },
+  badge: {
+    width: 52,
+    height: 52,
+    borderRadius: Spacing.three,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emoji: { fontSize: 26 },
+  cardText: { flex: 1, gap: 2 },
+  cardTitle: { fontSize: 18, fontWeight: '600' },
 });

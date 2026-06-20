@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "react-native-foonto",
-    "slug": "react-native-foonto",
+    "name": "foonto",
+    "slug": "foonto",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "reactnativefoonto",
+    "scheme": "foonto",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.foonto.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +18,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.foonto.app"
     },
     "web": {
       "output": "static",

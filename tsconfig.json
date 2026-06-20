@@ -8,6 +8,12 @@
       ],
       "@/assets/*": [
         "./assets/*"
+      ],
+      "react-native-foonto": [
+        "./src/foonto/index.ts"
+      ],
+      "react-native-foonto/*": [
+        "./src/foonto/*"
       ]
     }
   },
