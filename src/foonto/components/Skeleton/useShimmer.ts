@@ -1,4 +1,20 @@
-// TODO(impl): drive a looping shared value (0 → 1) and map it to a translateX
-// sweep of a gradient highlight across the placeholder. Implemented after
-// reviewing the SDK 56 Reanimated v4 docs.
-export {};
+import { useEffect } from 'react';
+import { Easing, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+
+/**
+ * A looping 0 → 1 progress value driving the shimmer sweep.
+ * Runs entirely on the UI thread.
+ */
+export function useShimmer(duration: number) {
+  const progress = useSharedValue(0);
+
+  useEffect(() => {
+    progress.value = withRepeat(
+      withTiming(1, { duration, easing: Easing.linear }),
+      -1,
+      false,
+    );
+  }, [duration, progress]);
+
+  return progress;
+}

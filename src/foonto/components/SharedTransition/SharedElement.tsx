@@ -1,10 +1,19 @@
-import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
+
 import type { SharedElementProps } from './types';
 
 /**
- * Marks a node as a shared element matched across screens by `id`.
- * TODO(impl): register with the provider and drive the transition.
+ * Marks a node as a shared element. Render a `SharedElement` with the SAME `id`
+ * on two native-stack screens and Reanimated animates the matching element
+ * (position + size) as you navigate between them.
+ *
+ * Requires the `ENABLE_SHARED_ELEMENT_TRANSITIONS` Reanimated feature flag and a
+ * native stack navigator. Not supported on web.
  */
-export function SharedElement({ children, style }: SharedElementProps) {
-  return <View style={style}>{children}</View>;
+export function SharedElement({ id, children, style }: SharedElementProps) {
+  return (
+    <Animated.View sharedTransitionTag={id} style={style}>
+      {children}
+    </Animated.View>
+  );
 }
