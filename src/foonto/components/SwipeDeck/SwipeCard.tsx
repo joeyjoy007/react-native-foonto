@@ -10,7 +10,7 @@ import { useSwipeGesture } from './useSwipeGesture';
 interface SwipeCardProps {
   children: ReactNode;
   onSwipe: (direction: SwipeDirection) => void;
-  progress: SharedValue<number>;
+  swiped: SharedValue<number>;
   swipeThreshold?: number;
   disableTopSwipe?: boolean;
   style?: FoontoStyle;
@@ -20,14 +20,14 @@ interface SwipeCardProps {
 export function SwipeCard({
   children,
   onSwipe,
-  progress,
+  swiped,
   swipeThreshold,
   disableTopSwipe,
   style,
 }: SwipeCardProps) {
   const { pan, cardStyle } = useSwipeGesture({
     onSwipe,
-    progress,
+    swiped,
     swipeThreshold,
     disableTopSwipe,
   });

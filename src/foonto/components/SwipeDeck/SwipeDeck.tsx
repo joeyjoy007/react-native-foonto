@@ -16,9 +16,13 @@ import { SwipeCard } from './SwipeCard';
 import type { SwipeDeckProps, SwipeDirection } from './types';
 
 /**
- * A Tinder-style deck of swipeable cards. Only the top card is interactive;
- * the cards behind it scale up and rise into place — driven continuously by the
- * top card's drag (`progress`), so there's no snap when the deck advances.
+ * A Tinder-style deck of swipeable cards. Only the top card is interactive; the
+ * cards behind it rise into place as the top card is dragged away.
+ *
+ * Every card is positioned by `dataIndex - swiped`, where `swiped` is a single
+ * cumulative shared value. Because that value is continuous on the UI thread and
+ * each card keys off its absolute index, advancing the deck never snaps or
+ * flickers — React only mounts/unmounts the off-screen and faded-in cards.
  */
 export function SwipeDeck<T>({
   data,
@@ -35,7 +39,8 @@ export function SwipeDeck<T>({
   cardStyle,
 }: SwipeDeckProps<T>) {
   const [index, setIndex] = useState(0);
-  const progress = useSharedValue(0);
+  // Cumulative number of cards swiped (fractional while a drag is in progress).
+  const swiped = useSharedValue(0);
 
   const handleSwipe = useCallback(
     (direction: SwipeDirection) => {
@@ -47,15 +52,12 @@ export function SwipeDeck<T>({
       else if (direction === 'right') onSwipeRight?.(item, index);
       else if (direction === 'top') onSwipeTop?.(item, index);
 
-      // Reset progress in the SAME tick the index advances: the card behind was
-      // already raised to the front (progress≈1), and its depth drops by 1, so
-      // `depth - progress` is continuous and nothing jumps.
-      progress.value = 0;
+      // `swiped` has already animated to index + 1; just advance React state.
       const next = index + 1;
       setIndex(next);
       if (next >= data.length) onEnd?.();
     },
-    [data, index, onSwipe, onSwipeLeft, onSwipeRight, onSwipeTop, onEnd, progress],
+    [data, index, onSwipe, onSwipeLeft, onSwipeRight, onSwipeTop, onEnd],
   );
 
   const visible: number[] = [];
@@ -67,15 +69,14 @@ export function SwipeDeck<T>({
     <View style={[styles.deck, style]}>
       {visible
         .map((dataIndex) => {
-          const depth = dataIndex - index;
           const content = renderCard(data[dataIndex], dataIndex);
 
-          if (depth === 0) {
+          if (dataIndex === index) {
             return (
               <SwipeCard
                 key={dataIndex}
                 onSwipe={handleSwipe}
-                progress={progress}
+                swiped={swiped}
                 swipeThreshold={swipeThreshold}
                 disableTopSwipe={disableTopSwipe}
                 style={cardStyle}>
@@ -85,7 +86,11 @@ export function SwipeDeck<T>({
           }
 
           return (
-            <BackgroundCard key={dataIndex} depth={depth} progress={progress} style={cardStyle}>
+            <BackgroundCard
+              key={dataIndex}
+              dataIndex={dataIndex}
+              swiped={swiped}
+              style={cardStyle}>
               {content}
             </BackgroundCard>
           );
@@ -97,19 +102,19 @@ export function SwipeDeck<T>({
 }
 
 interface BackgroundCardProps {
-  depth: number;
-  progress: SharedValue<number>;
+  dataIndex: number;
+  swiped: SharedValue<number>;
   children: ReactNode;
   style?: FoontoStyle;
 }
 
 /**
- * A non-interactive card behind the top card. Its "effective depth" shrinks as
- * the top card is dragged away, raising it smoothly toward the front.
+ * A non-interactive card behind the top card. Its effective depth
+ * (`dataIndex - swiped`) shrinks continuously as the deck advances.
  */
-function BackgroundCard({ depth, progress, children, style }: BackgroundCardProps) {
+function BackgroundCard({ dataIndex, swiped, children, style }: BackgroundCardProps) {
   const animatedStyle = useAnimatedStyle(() => {
-    const d = depth - progress.value;
+    const d = dataIndex - swiped.value;
     return {
       transform: [
         { scale: interpolate(d, [0, 1, 2, 3], [1, 0.92, 0.85, 0.85], Extrapolation.CLAMP) },
@@ -120,9 +125,7 @@ function BackgroundCard({ depth, progress, children, style }: BackgroundCardProp
   });
 
   return (
-    <Animated.View
-      entering={FadeIn.duration(220)}
-      style={[styles.card, animatedStyle, style]}>
+    <Animated.View entering={FadeIn.duration(220)} style={[styles.card, animatedStyle, style]}>
       {children}
     </Animated.View>
   );
