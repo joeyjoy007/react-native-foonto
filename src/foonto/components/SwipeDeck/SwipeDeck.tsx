@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   Extrapolation,
+  FadeIn,
   interpolate,
+  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from 'react-native-reanimated';
 
 import type { FoontoStyle } from '../../types';
@@ -16,7 +17,8 @@ import type { SwipeDeckProps, SwipeDirection } from './types';
 
 /**
  * A Tinder-style deck of swipeable cards. Only the top card is interactive;
- * cards behind it scale up and rise into place as the deck advances.
+ * the cards behind it scale up and rise into place — driven continuously by the
+ * top card's drag (`progress`), so there's no snap when the deck advances.
  */
 export function SwipeDeck<T>({
   data,
@@ -33,6 +35,7 @@ export function SwipeDeck<T>({
   cardStyle,
 }: SwipeDeckProps<T>) {
   const [index, setIndex] = useState(0);
+  const progress = useSharedValue(0);
 
   const handleSwipe = useCallback(
     (direction: SwipeDirection) => {
@@ -44,11 +47,15 @@ export function SwipeDeck<T>({
       else if (direction === 'right') onSwipeRight?.(item, index);
       else if (direction === 'top') onSwipeTop?.(item, index);
 
+      // Reset progress in the SAME tick the index advances: the card behind was
+      // already raised to the front (progress≈1), and its depth drops by 1, so
+      // `depth - progress` is continuous and nothing jumps.
+      progress.value = 0;
       const next = index + 1;
       setIndex(next);
       if (next >= data.length) onEnd?.();
     },
-    [data, index, onSwipe, onSwipeLeft, onSwipeRight, onSwipeTop, onEnd],
+    [data, index, onSwipe, onSwipeLeft, onSwipeRight, onSwipeTop, onEnd, progress],
   );
 
   const visible: number[] = [];
@@ -68,6 +75,7 @@ export function SwipeDeck<T>({
               <SwipeCard
                 key={dataIndex}
                 onSwipe={handleSwipe}
+                progress={progress}
                 swipeThreshold={swipeThreshold}
                 disableTopSwipe={disableTopSwipe}
                 style={cardStyle}>
@@ -77,7 +85,7 @@ export function SwipeDeck<T>({
           }
 
           return (
-            <BackgroundCard key={dataIndex} depth={depth} style={cardStyle}>
+            <BackgroundCard key={dataIndex} depth={depth} progress={progress} style={cardStyle}>
               {content}
             </BackgroundCard>
           );
@@ -90,26 +98,34 @@ export function SwipeDeck<T>({
 
 interface BackgroundCardProps {
   depth: number;
+  progress: SharedValue<number>;
   children: ReactNode;
   style?: FoontoStyle;
 }
 
-/** A non-interactive card behind the top card, animating toward the front. */
-function BackgroundCard({ depth, children, style }: BackgroundCardProps) {
-  const progress = useSharedValue(depth);
+/**
+ * A non-interactive card behind the top card. Its "effective depth" shrinks as
+ * the top card is dragged away, raising it smoothly toward the front.
+ */
+function BackgroundCard({ depth, progress, children, style }: BackgroundCardProps) {
+  const animatedStyle = useAnimatedStyle(() => {
+    const d = depth - progress.value;
+    return {
+      transform: [
+        { scale: interpolate(d, [0, 1, 2, 3], [1, 0.92, 0.85, 0.85], Extrapolation.CLAMP) },
+        { translateY: interpolate(d, [0, 1, 2, 3], [0, 18, 34, 34], Extrapolation.CLAMP) },
+      ],
+      opacity: interpolate(d, [0, 1, 2, 3], [1, 1, 1, 0], Extrapolation.CLAMP),
+    };
+  });
 
-  useEffect(() => {
-    progress.value = withSpring(depth, { damping: 20, stiffness: 160 });
-  }, [depth, progress]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: interpolate(progress.value, [0, 1, 2], [1, 0.94, 0.88], Extrapolation.CLAMP) },
-      { translateY: interpolate(progress.value, [0, 1, 2], [0, 14, 28], Extrapolation.CLAMP) },
-    ],
-  }));
-
-  return <Animated.View style={[styles.card, animatedStyle, style]}>{children}</Animated.View>;
+  return (
+    <Animated.View
+      entering={FadeIn.duration(220)}
+      style={[styles.card, animatedStyle, style]}>
+      {children}
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({

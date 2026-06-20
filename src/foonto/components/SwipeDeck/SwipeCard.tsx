@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import Animated, { type SharedValue } from 'react-native-reanimated';
 
 import type { FoontoStyle } from '../../types';
 import type { SwipeDirection } from './types';
@@ -10,6 +10,7 @@ import { useSwipeGesture } from './useSwipeGesture';
 interface SwipeCardProps {
   children: ReactNode;
   onSwipe: (direction: SwipeDirection) => void;
+  progress: SharedValue<number>;
   swipeThreshold?: number;
   disableTopSwipe?: boolean;
   style?: FoontoStyle;
@@ -19,11 +20,17 @@ interface SwipeCardProps {
 export function SwipeCard({
   children,
   onSwipe,
+  progress,
   swipeThreshold,
   disableTopSwipe,
   style,
 }: SwipeCardProps) {
-  const { pan, cardStyle } = useSwipeGesture({ onSwipe, swipeThreshold, disableTopSwipe });
+  const { pan, cardStyle } = useSwipeGesture({
+    onSwipe,
+    progress,
+    swipeThreshold,
+    disableTopSwipe,
+  });
 
   return (
     <GestureDetector gesture={pan}>

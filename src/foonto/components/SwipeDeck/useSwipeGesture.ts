@@ -4,6 +4,7 @@ import {
   Extrapolation,
   interpolate,
   runOnJS,
+  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -16,17 +17,23 @@ import type { SwipeDirection } from './types';
 interface UseSwipeGestureParams {
   /** Called once the card has flung off screen, with the committed direction. */
   onSwipe: (direction: SwipeDirection) => void;
+  /**
+   * Deck-level 0→1 value describing how far the top card is toward a commit.
+   * The deck reads it to promote the cards behind continuously (no post-swipe snap).
+   */
+  progress: SharedValue<number>;
   swipeThreshold?: number;
   disableTopSwipe?: boolean;
 }
 
 /**
  * Pan gesture + interpolated transform for the top card of a SwipeDeck.
- * Drives translation/rotation on the UI thread and commits a swipe once the
- * release crosses the threshold, flinging the card off screen before resolving.
+ * Drives translation/rotation on the UI thread and, while dragging, writes a
+ * normalized `progress` the deck uses to raise the cards behind in lockstep.
  */
 export function useSwipeGesture({
   onSwipe,
+  progress,
   swipeThreshold = SWIPE_THRESHOLD,
   disableTopSwipe = false,
 }: UseSwipeGestureParams) {
@@ -41,6 +48,12 @@ export function useSwipeGesture({
     .onUpdate((event) => {
       translateX.value = event.translationX;
       translateY.value = event.translationY;
+      // Promote the stack proportionally to the larger of the two drag ratios.
+      const ratio = Math.max(
+        Math.abs(event.translationX) / xThreshold,
+        Math.abs(event.translationY) / yThreshold,
+      );
+      progress.value = Math.min(ratio, 1);
     })
     .onEnd((event) => {
       const swipeX = Math.abs(translateX.value) > xThreshold;
@@ -50,6 +63,7 @@ export function useSwipeGesture({
         Math.abs(translateX.value) < xThreshold;
 
       if (swipeUp) {
+        progress.value = withTiming(1, { duration: SWIPE_OUT_DURATION });
         translateX.value = withTiming(translateX.value + event.velocityX * 0.05, {
           duration: SWIPE_OUT_DURATION,
         });
@@ -62,6 +76,7 @@ export function useSwipeGesture({
         );
       } else if (swipeX) {
         const direction: SwipeDirection = translateX.value > 0 ? 'right' : 'left';
+        progress.value = withTiming(1, { duration: SWIPE_OUT_DURATION });
         translateY.value = withTiming(translateY.value + event.velocityY * 0.05, {
           duration: SWIPE_OUT_DURATION,
         });
@@ -75,6 +90,7 @@ export function useSwipeGesture({
       } else {
         translateX.value = withSpring(0, { damping: 18, stiffness: 180 });
         translateY.value = withSpring(0, { damping: 18, stiffness: 180 });
+        progress.value = withSpring(0, { damping: 18, stiffness: 180 });
       }
     });
 

@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SharedElement } from 'react-native-foonto';
+import { SharedElement, sharedTransitions } from 'react-native-foonto';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -13,7 +13,7 @@ export default function SharedTransitionGrid() {
     <ThemedView style={styles.container}>
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
         <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
-          Tap a tile — it morphs into the detail screen.
+          Each tile morphs with a different transition. Tap one.
         </ThemedText>
         <View style={styles.grid}>
           {TILES.map((tile) => (
@@ -24,8 +24,12 @@ export default function SharedTransitionGrid() {
               <Pressable style={styles.cell}>
                 <SharedElement
                   id={`tile-${tile.id}`}
+                  transition={sharedTransitions[tile.transition]}
                   style={[styles.tile, { backgroundColor: tile.color }]}
                 />
+                <ThemedText type="small" themeColor="textSecondary" style={styles.label}>
+                  {tile.transition}
+                </ThemedText>
               </Pressable>
             </Link>
           ))}
@@ -45,6 +49,7 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     justifyContent: 'center',
   },
-  cell: { width: '30%', aspectRatio: 1 },
-  tile: { flex: 1, borderRadius: Spacing.four },
+  cell: { width: '30%', gap: Spacing.one },
+  tile: { width: '100%', aspectRatio: 1, borderRadius: Spacing.four },
+  label: { textAlign: 'center' },
 });

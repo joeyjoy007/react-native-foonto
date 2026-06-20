@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SharedElement } from 'react-native-foonto';
+import { SharedElement, sharedTransitions } from 'react-native-foonto';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -10,16 +10,21 @@ import { TILES } from '@/constants/tiles';
 
 export default function SharedTransitionDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const color = TILES.find((tile) => tile.id === id)?.color ?? '#208AEF';
+  const tile = TILES.find((t) => t.id === id);
+  const color = tile?.color ?? '#208AEF';
 
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <SharedElement id={`tile-${id}`} style={[styles.hero, { backgroundColor: color }]} />
+        <SharedElement
+          id={`tile-${id}`}
+          transition={tile ? sharedTransitions[tile.transition] : undefined}
+          style={[styles.hero, { backgroundColor: color }]}
+        />
         <ThemedText type="subtitle">Tile {id}</ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
-          The square animated from the grid into this hero using a shared element transition —
-          Reanimated matched the two `tile-{id}` tags across the navigation.
+          Animated from the grid using the “{tile?.transition ?? 'default'}” shared transition —
+          Reanimated matched the two tile-{id} tags across navigation.
         </ThemedText>
       </SafeAreaView>
     </ThemedView>
