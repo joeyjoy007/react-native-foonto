@@ -12,7 +12,8 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ title: 'rn-foonto' }} />
           <Stack.Screen name="swipe-deck" options={{ title: 'Swipe Deck' }} />
           <Stack.Screen name="skeleton" options={{ title: 'Skeleton' }} />
-          <Stack.Screen name="shared-transition" options={{ title: 'Shared Transition' }} />
+          <Stack.Screen name="shared-transition/index" options={{ title: 'Shared Transition' }} />
+          <Stack.Screen name="shared-transition/[id]" options={{ title: 'Detail' }} />
         </Stack>
       </ThemeProvider>
     </GestureHandlerRootView>

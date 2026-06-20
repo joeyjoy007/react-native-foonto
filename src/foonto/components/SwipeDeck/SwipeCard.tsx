@@ -1,18 +1,42 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
-import type { FoontoStyle } from '../../types';
+import { StyleSheet } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated, { type SharedValue } from 'react-native-reanimated';
 
-export interface SwipeCardProps {
+import type { FoontoStyle } from '../../types';
+import type { SwipeDirection } from './types';
+import { useSwipeGesture } from './useSwipeGesture';
+
+interface SwipeCardProps {
   children: ReactNode;
+  onSwipe: (direction: SwipeDirection) => void;
+  swiped: SharedValue<number>;
+  swipeThreshold?: number;
+  disableTopSwipe?: boolean;
   style?: FoontoStyle;
 }
 
-/**
- * A single draggable card.
- * TODO(impl): wire the gesture + Reanimated transform via useSwipeGesture.
- */
-export function SwipeCard({ children, style }: SwipeCardProps) {
-  return <View style={[styles.card, style]}>{children}</View>;
+/** The interactive top card of the deck. Internal to SwipeDeck. */
+export function SwipeCard({
+  children,
+  onSwipe,
+  swiped,
+  swipeThreshold,
+  disableTopSwipe,
+  style,
+}: SwipeCardProps) {
+  const { pan, cardStyle } = useSwipeGesture({
+    onSwipe,
+    swiped,
+    swipeThreshold,
+    disableTopSwipe,
+  });
+
+  return (
+    <GestureDetector gesture={pan}>
+      <Animated.View style={[styles.card, cardStyle, style]}>{children}</Animated.View>
+    </GestureDetector>
+  );
 }
 
 const styles = StyleSheet.create({

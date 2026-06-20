@@ -1,2 +1,9 @@
 export { Skeleton } from './Skeleton';
-export type { SkeletonProps } from './types';
+export { SkeletonText } from './SkeletonText';
+export { SkeletonCard } from './SkeletonCard';
+export type {
+  SkeletonProps,
+  SkeletonTextProps,
+  SkeletonCardProps,
+  SkeletonAnimation,
+} from './types';
