@@ -18,6 +18,23 @@ Every animation runs on the UI thread, ships with TypeScript types, and works on
 
 ---
 
+## Previews
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <b>Shared Transition</b><br/>
+      <img src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/shared.gif" width="100%" alt="Shared Transition demo" />
+    </td>
+    <td width="50%" align="center">
+      <b>Stack Cards</b><br/>
+      <img src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/stack-cards.gif" width="100%" alt="Stack Cards demo" />
+    </td>
+  </tr>
+</table>
+
+> Want to see all of them? [**Watch every animation on foonto.com →**](https://foonto.com)
+
 ## Why foonto
 
 - **🎬 Real motion, the right way.** Gesture- and scroll-driven animations that run on the UI thread — no per-frame work on the JS thread, no jank.
@@ -110,23 +127,6 @@ Full props, *How to use* snippets, and copy-paste AI prompts for every component
 | **Toast** | Stacking, auto-dismissing notifications | [→](https://foonto.com/docs/toast) |
 
 > 💡 **Watch every animation in motion at [foonto.com](https://foonto.com)** — with code and AI prompts on each page.
-
-## Previews
-
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <b>Shared Transition</b><br/>
-      <img src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/shared.gif" width="100%" alt="Shared Transition demo" />
-    </td>
-    <td width="50%" align="center">
-      <b>Stack Cards</b><br/>
-      <img src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/stack-cards.gif" width="100%" alt="Stack Cards demo" />
-    </td>
-  </tr>
-</table>
-
-> Want to see all of them? [**Watch every animation on foonto.com →**](https://foonto.com)
 
 ## Shared element transitions — extra setup
 
