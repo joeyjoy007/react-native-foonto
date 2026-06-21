@@ -1,6 +1,6 @@
 {
   "name": "react-native-foonto",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Beautiful, open-source React Native animations — Tinder-style swipe deck, skeleton shimmers, and shared element transitions. Built on Reanimated & Gesture Handler.",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
@@ -55,14 +55,23 @@
     "skeleton",
     "shimmer",
     "shared-element",
-    "transition"
+    "transition",
+    "carousel",
+    "parallax",
+    "otp",
+    "checkbox",
+    "toast",
+    "masonry",
+    "drag-and-drop",
+    "tab-bar",
+    "stack-cards"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joeyjoy007/react-native-foonto.git"
   },
   "license": "MIT",
-  "homepage": "https://github.com/joeyjoy007/react-native-foonto#readme",
+  "homepage": "https://foonto.com",
   "peerDependencies": {
     "expo-linear-gradient": "*",
     "react": "*",

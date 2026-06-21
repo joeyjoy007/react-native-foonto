@@ -1,56 +1,162 @@
-# Welcome to your Expo app 👋
+<div align="center">
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# react-native-foonto
 
-## Get started
+### Beautiful, production-grade React Native animations — copy the code, or paste the AI prompt and ship.
 
-1. Install dependencies
+Polished, customizable components built on **Reanimated 4** & **Gesture Handler 2**.
+Every animation runs on the UI thread, ships with TypeScript types, and works on **iOS** & **Android**.
 
-   ```bash
-   npm install
-   ```
+[**🌐 Website & live demos →  foonto.com**](https://foonto.com) &nbsp;·&nbsp; [**📚 Docs**](https://foonto.com/docs) &nbsp;·&nbsp; [**📦 npm**](https://www.npmjs.com/package/react-native-foonto)
 
-2. Start the app
+[![npm version](https://img.shields.io/npm/v/react-native-foonto?color=6d28d9&label=npm)](https://www.npmjs.com/package/react-native-foonto)
+[![npm downloads](https://img.shields.io/npm/dm/react-native-foonto?color=6d28d9)](https://www.npmjs.com/package/react-native-foonto)
+[![license](https://img.shields.io/npm/l/react-native-foonto?color=6d28d9)](./LICENSE)
+![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20Android-6d28d9)
 
-   ```bash
-   npx expo start
-   ```
+</div>
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Why foonto
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **🎬 Real motion, the right way.** Gesture- and scroll-driven animations that run on the UI thread — no per-frame work on the JS thread, no jank.
+- **📋 Copy-paste or prompt-to-ship.** Every component ships a minimal *How to use* snippet **and** a numbered AI prompt you can hand to Claude/Cursor to integrate it for you.
+- **🎛️ Customizable by default.** Sensible defaults, fully typed props — colors, sizes, timings, and custom renderers where it matters.
+- **🧩 Tree-shakeable & typed.** Import only what you use. First-class TypeScript types throughout. No `any`.
+- **🆓 Open source, MIT.** Free forever. Use it in anything.
 
-## Get a fresh project
-
-When you're ready, run:
+## Installation
 
 ```bash
-npm run reset-project
+npm install react-native-foonto react-native-reanimated react-native-gesture-handler expo-linear-gradient
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Using Expo:
 
-### Other setup steps
+```bash
+npx expo install react-native-foonto react-native-reanimated react-native-gesture-handler expo-linear-gradient
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+> **Peer dependencies:** `react-native-reanimated` (v4+), `react-native-gesture-handler` (v2+), and `expo-linear-gradient`.
+> Built and tested on **Expo SDK 56 · React Native 0.85 · Reanimated 4 · Gesture Handler 2** (new architecture / Fabric).
 
-## Learn more
+Wrap your app root once so gestures work everywhere:
 
-To learn more about developing your project with Expo, look at the following resources:
+```tsx
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+export default function App() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* ...your navigator / screens... */}
+    </GestureHandlerRootView>
+  );
+}
+```
 
-## Join the community
+## Quick start
 
-Join our community of developers creating universal apps.
+```tsx
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SwipeDeck } from "react-native-foonto";
+import { View, Text } from "react-native";
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+const PROFILES = [
+  { id: "1", name: "Ada Lovelace", role: "Mathematician" },
+  { id: "2", name: "Linus Torvalds", role: "Engineer" },
+  { id: "3", name: "Grace Hopper", role: "Computer Scientist" },
+];
+
+export default function Discover() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SwipeDeck
+        data={PROFILES}
+        stackSize={3}
+        renderCard={(item) => (
+          <View style={{ flex: 1, borderRadius: 24, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" }}>
+            <Text style={{ fontSize: 24, fontWeight: "700" }}>{item.name}</Text>
+            <Text style={{ color: "#666", marginTop: 6 }}>{item.role}</Text>
+          </View>
+        )}
+        onSwipeRight={(item) => console.log("liked", item.name)}
+        onSwipeLeft={(item) => console.log("passed", item.name)}
+      />
+    </GestureHandlerRootView>
+  );
+}
+```
+
+Full props, *How to use* snippets, and copy-paste AI prompts for every component live at **[foonto.com/docs](https://foonto.com/docs)**.
+
+## Components
+
+| Component | What it does | Docs |
+| --- | --- | --- |
+| **SwipeDeck** | Tinder-style card deck — fling left, right, or up | [→](https://foonto.com/docs/swipe-deck) |
+| **Shared Transition** | Morph an element smoothly between screens | [→](https://foonto.com/docs/shared-transition) |
+| **Stack Cards** | Wallet-style stack — swipe up or tap to cycle | [→](https://foonto.com/docs/stack-cards) |
+| **Blob Tab Bar** | Bottom tab bar with a sliding highlight pill | [→](https://foonto.com/docs/blob-tab-bar) |
+| **Carousel** | Center-focused, snapping carousel | [→](https://foonto.com/docs/carousel) |
+| **Draggable List** | Long-press to reorder rows | [→](https://foonto.com/docs/draggable-list) |
+| **Parallax Carousel** | Full-width pager with a parallaxing background | [→](https://foonto.com/docs/parallax-carousel) |
+| **Masonry Grid** | Balanced multi-column grid with a staggered reveal | [→](https://foonto.com/docs/masonry-grid) |
+| **Skeleton** | Shimmer placeholders for loading states | [→](https://foonto.com/docs/skeleton) |
+| **Animated Checkbox** | Fills and pops a checkmark when toggled | [→](https://foonto.com/docs/animated-checkbox) |
+| **Parallax Header** | Scroll view with a parallax, pull-to-zoom header | [→](https://foonto.com/docs/parallax-header) |
+| **OTP Input** | Segmented PIN field where each digit bounces in | [→](https://foonto.com/docs/otp-input) |
+| **Search Bar** | Grows from an icon button to a full-width field | [→](https://foonto.com/docs/search-bar) |
+| **Toast** | Stacking, auto-dismissing notifications | [→](https://foonto.com/docs/toast) |
+
+> 💡 **Watch every animation in motion at [foonto.com](https://foonto.com)** — with code and AI prompts on each page.
+
+## Previews
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <b>Shared Transition</b><br/>
+      <video src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/shared.mp4" autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td width="50%" align="center">
+      <b>Stack Cards</b><br/>
+      <video src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/stack-cards.mp4" autoplay loop muted playsinline width="100%"></video>
+    </td>
+  </tr>
+</table>
+
+> Videos not playing here? [**See every animation on foonto.com →**](https://foonto.com)
+
+## Shared element transitions — extra setup
+
+`SharedTransition` needs the Reanimated static feature flag, a **native stack** navigator, and a **native build** (not Expo Go, not web). In your `package.json`:
+
+```json
+{
+  "reanimated": {
+    "staticFeatureFlags": {
+      "ENABLE_SHARED_ELEMENT_TRANSITIONS": true
+    }
+  }
+}
+```
+
+## TypeScript
+
+Written in TypeScript — types ship with the package, no `@types` needed. Public prop types are exported alongside each component (e.g. `SwipeDeckProps`, `BlobTab`, `FoontoStyle`).
+
+## Links
+
+- 🌐 **Website & live demos** — [foonto.com](https://foonto.com)
+- 📚 **Docs** (props · How to use · AI prompts) — [foonto.com/docs](https://foonto.com/docs)
+- 📦 **npm** — [npmjs.com/package/react-native-foonto](https://www.npmjs.com/package/react-native-foonto)
+- 💻 **GitHub** — [github.com/joeyjoy007/react-native-foonto](https://github.com/joeyjoy007/react-native-foonto)
+
+## Contributing
+
+Issues and PRs are welcome. The library lives in `src/`; the showcase app lives in `example/`. See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the project structure and code standards.
+
+## License
+
+[MIT](./LICENSE) © foonto
