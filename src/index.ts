@@ -56,5 +56,8 @@ export * from './components/ParallaxCarousel';
 // 14. Staggered masonry grid
 export * from './components/MasonryGrid';
 
+// 15. Category grid that collapses into a bar
+export * from './components/District';
+
 // Shared public types
 export * from './types';

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   IconBell,
   IconCards,
+  IconCategory,
   IconCheckbox,
   IconColumns,
   IconDeviceMobile,
@@ -47,6 +48,7 @@ const DEMOS: Demo[] = [
   { href: '/carousel', title: 'Carousel', description: 'Center-focused snapping cards', accent: '#312E81', Icon: IconColumns },
   { href: '/parallax-carousel', title: 'Parallax Carousel', description: 'Full-width pages with drifting art', accent: '#22D3EE', Icon: IconPhoto },
   { href: '/masonry-grid', title: 'Masonry Grid', description: 'Staggered two-column reveal', accent: '#A855F7', Icon: IconLayoutDashboard },
+  { href: '/district', title: 'District', description: 'Category grid that collapses into a bar', accent: '#6D28D9', Icon: IconCategory },
 ];
 
 export default function HomeScreen() {
