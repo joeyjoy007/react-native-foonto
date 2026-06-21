@@ -1,21 +1,21 @@
+import {
+  IconHome,
+  IconMovie,
+  IconSearch,
+  IconSquareRoundedPlus,
+  IconUser,
+} from '@tabler/icons-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRef, useState } from 'react';
+import type { ScrollView } from 'react-native';
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { BlobTabBar, type BlobTab } from 'react-native-foonto';
 import Animated, {
   useAnimatedScrollHandler,
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
-import type { ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import {
-  IconHome,
-  IconSearch,
-  IconSquareRoundedPlus,
-  IconMovie,
-  IconUser,
-} from '@tabler/icons-react-native';
-import { BlobTabBar, type BlobTab } from 'react-native-foonto';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
