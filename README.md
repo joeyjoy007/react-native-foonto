@@ -117,16 +117,16 @@ Full props, *How to use* snippets, and copy-paste AI prompts for every component
   <tr>
     <td width="50%" align="center">
       <b>Shared Transition</b><br/>
-      <video src="https://github.com/user-attachments/assets/bed572d9-aa99-4dcd-9664-02d147bb89cc" autoplay loop muted playsinline width="100%"></video>
+      <img src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/shared.gif" width="100%" alt="Shared Transition demo" />
     </td>
     <td width="50%" align="center">
       <b>Stack Cards</b><br/>
-      <video src="https://github.com/user-attachments/assets/4cb7c6dd-4129-4c0d-b41e-468ff5df483e" autoplay loop muted playsinline width="100%"></video>
+      <img src="https://raw.githubusercontent.com/joeyjoy007/react-native-foonto/main/docs/media/stack-cards.gif" width="100%" alt="Stack Cards demo" />
     </td>
   </tr>
 </table>
 
-> Videos not playing here? [**See every animation on foonto.com →**](https://foonto.com)
+> Want to see all of them? [**Watch every animation on foonto.com →**](https://foonto.com)
 
 ## Shared element transitions — extra setup
 
